@@ -1,0 +1,16 @@
+define({
+  "name": "Meeting Planner Application",
+  "version": "0.0.1",
+  "description": "Documentation for the Meeting Planner app",
+  "title": "Meeting Planner APIs",
+  "url": "http://rinkesh.cf:3001",
+  "sampleUrl": false,
+  "defaultVersion": "0.0.0",
+  "apidoc": "0.3.0",
+  "generator": {
+    "name": "apidoc",
+    "time": "2019-06-24T08:15:30.482Z",
+    "url": "http://apidocjs.com",
+    "version": "0.17.7"
+  }
+});

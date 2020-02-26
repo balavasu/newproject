@@ -1,0 +1,25 @@
+{
+  "name": "BackEnd_MeetingPlanner",
+  "version": "1.0.0",
+  "description": "Nodejs api for Meeting Planner application",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rinkeshpatel22",
+  "license": "ISC",
+  "dependencies": {
+    "apidoc": "^0.17.7",
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
+    "mongoose": "^5.5.14",
+    "nodemailer": "^6.2.1",
+    "nodemon": "^1.19.1",
+    "pino": "^5.12.6",
+    "redis": "^2.8.0",
+    "shortid": "^2.2.14",
+    "socket.io": "^2.2.0"
+  }
+}
