@@ -1,0 +1,63 @@
+.at-nav-buttons{
+    padding: 20px 0;
+    text-align: center;
+    
+    .at-back-btn, .at-create-btn{
+        button{
+            width: 170px;
+            &:hover{
+                box-shadow: 0px 0px 10px #777;
+            }
+        }
+    }
+    @media only screen and (min-width: 576px){
+        .at-back-btn{
+            text-align: right;
+        }
+        .at-create-btn{
+            text-align: left;
+        }
+    }
+}
+.admin-dashboard{
+    .user-list{
+        margin-top: 40px;
+    }
+}
+.at-user-box{
+    margin-bottom: 20px;
+    cursor: pointer;
+    &:hover{
+        box-shadow: 0px 0px 10px #777;
+    }
+}
+.fa-user{
+    font-size: 40px;
+    position: absolute;
+    line-height: 40px;
+}
+.at-ellipsis{
+line-height: 40px;
+}
+i{
+    color: #007bff;  
+}
+.fa-envelope, .fa-phone-square{
+    margin-right: 10px;
+}
+
+@media only screen and (max-width: 1023px){
+    .user-icon{
+        display: none;
+    }
+    .at-email, .at-mobile{
+        line-height: 40px;
+    }
+}
+
+@media only screen and (max-width: 575px){
+    .shadow-box-card{
+        width: 90%;
+        margin:20px auto;
+    }
+}
