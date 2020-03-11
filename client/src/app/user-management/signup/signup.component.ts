@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AppService } from '../../services/app.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-signup',
@@ -22,16 +23,36 @@ export class SignupComponent implements OnInit {
   public countryList: any[] = [];
   public countryCodes: string[];
   public isLoading: boolean = false;
+   closeResult: string;
 
   constructor(
     public appService: AppService,
     public router: Router,
+    private modalService: NgbModal,
     private toastr: ToastrService) { }
-
-  ngOnInit() {
-    this.getCountries()
-  }
   
+
+
+    open(content) {
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+  private getDismissReason(reason: any): string {
+    if (reason === ModalDismissReasons.ESC) {
+      return 'by pressing ESC';
+    } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
+      return 'by clicking on a backdrop';
+    } else {
+      return  `with: ${reason}`;
+    }
+  }
+
+ngOnInit() {
+  this.getCountries()
+}
   public getCountries() {
     // get list of countries 
     this.appService.getCountries()
