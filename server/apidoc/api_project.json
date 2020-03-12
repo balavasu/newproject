@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Documentation for the Meeting schedular app",
   "title": "Meeting schedular APIs",
-  "url": "http://rinkesh.cf:3001",
+  "url": "http://127.0.0.1:3001",
   "sampleUrl": false,
   "defaultVersion": "0.0.0",
   "apidoc": "0.3.0",

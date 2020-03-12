@@ -16,7 +16,7 @@
 <script id="template-sidenav" type="text/x-handlebars-template">
 <nav id="scrollingNav">
   <div class="sidenav-search">
-    <input class="form-control search" type="text" placeholder="{{__ "Filter..."}}">
+    <input class="form-control search" type="text" placeholder="{{__ "Filter..." }}" >
     <span class="search-reset">x</span>
   </div>
   <ul class="sidenav nav nav-list list">
@@ -184,7 +184,7 @@
           <tr>
           <th style="width: 30%">{{#if ../_col1}}{{__ ../_col1}}{{else}}{{__ "Field"}}{{/if}}</th>
             {{#if ../_hasType}}<th style="width: 10%">{{__ "Type"}}</th>{{/if}}
-            <th style="width: {{#if ../_hasType}}60%{{else}}70%{{/if}}">{{__ "Description"}}</th>
+            <th style="width:  {{#if ../_hasType}}60%{{else}}70%{{/if}}">{{__ "Description"}}</th>
           </tr>
         </thead>
         <tbody>
@@ -340,13 +340,13 @@
     <ul class="nav nav-tabs nav-tabs-examples">
     {{#each_compare_title article.examples compare.examples}}
       {{#if typeSame}}
-        <li{{#if_eq index compare=0}} class="active"{{/if_eq}}>
+        <li {{#if_eq index compare=0}} class="active" {{/if_eq}}>
           <a href="#compare-examples-{{../../article.id}}-{{index}}">{{{showDiff source.title compare.title}}}</a>
         </li>
       {{/if}}
 
       {{#if typeIns}}
-        <li{{#if_eq index compare=0}} class="active"{{/if_eq}}>
+        <li {{#if_eq index compare=0}} class="active"{{/if_eq}}>
           <a href="#compare-examples-{{../../article.id}}-{{index}}"><ins>{{{source.title}}}</ins></a>
         </li>
       {{/if}}

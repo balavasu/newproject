@@ -7,6 +7,7 @@ const loggerLib = require('../libs/loggerLib');
 const validationLib = require('../libs/validationLib');
 const checkLib = require('../libs/checkLib');
 const tokenLib = require('../libs/tokenLib');
+const ResponseCode= require('../constants/statusCode');
 const AuthModel = mongoose.model('Auth');
 const UserModel = mongoose.model('User');
 const emailLib = require('../libs/emailLib');
@@ -17,16 +18,16 @@ let signUp = (req, res) => {
         return new Promise((resolve, reject) => {
             if (req.body.email) {
                 if (!validationLib.validateEmail(req.body.email)) {
-                    let response = responseLib.generate(true, 'Invalid email id', 400, null);
+                    let response = responseLib.generate(true, 'Invalid email id', ResponseCode, null);
                     reject(response);
                 } else if (!validationLib.validatePassword(req.body.password)) {
-                    let response = responseLib.generate(true, 'Password length must be minimum 8 characters', 400, null);
+                    let response = responseLib.generate(true, 'Password length must be minimum 8 characters', ResponseCode, null);
                     reject(response);
                 } else {
                     resolve(req);
                 }
             } else {
-                let response = responseLib.generate(true, 'Bad request, some parameter is missing', 400, null);
+                let response = responseLib.generate(true, 'Bad request, some parameter is missing', ResponseCode , null);
                 reject(response);
             }
         });
@@ -39,7 +40,7 @@ let signUp = (req, res) => {
             })
                 .exec((err, retrievedUserDetails) => {
                     if (err) {
-                        let response = responseLib.generate(true, 'Failed To Create User', 500, null)
+                        let response = responseLib.generate(true, 'Failed To Create User', ResponseCode, null)
                         reject(response)
                     } else if (checkLib.isEmpty(retrievedUserDetails)) {
                         let newUser = new UserModel({
@@ -58,7 +59,7 @@ let signUp = (req, res) => {
                         newUser.save((err, newUser) => {
                             if (err) {
                                 loggerLib.error(err.message, 'userController: createUser', 10)
-                                let response = responseLib.generate(true, 'Failed to create new User as some details are inappropriate', 500, null)
+                                let response = responseLib.generate(true, 'Failed to create new User as some details are inappropriate', ResponseCode, null)
                                 reject(response)
                             } else {
                                 let newUserObj = newUser.toObject();
@@ -67,8 +68,8 @@ let signUp = (req, res) => {
                             }
                         })
                     } else {
-                        loggerLib.error('User Cannot Be Created.User Already Present', 'userController: createUser', 4)
-                        let response = responseLib.generate(true, 'User Already Present With this Email', 403, null)
+                        loggerLib.error('User Cannot Be Created.User Already used', 'userController: createUser', 4)
+                        let response = responseLib.generate(true, 'User Already used With this Email', ResponseCode, null)
                         reject(response)
                     }
                 })
@@ -80,7 +81,7 @@ let signUp = (req, res) => {
         .then(createUser)
         .then((resolve) => {
             delete resolve.password
-            let response = responseLib.generate(false, 'User created', 200, resolve)
+            let response = responseLib.generate(false, 'User created', ResponseCode, resolve)
             res.send(response)
         })
         .catch((err) => {
@@ -99,10 +100,10 @@ let login = (req, res) => {
                     (err, userDetails) => {
                         if (err) {
                             loggerLib.error('Failed to find user', 'userController: findUser()');
-                            let response = responseLib.generate(true, 'Internal server error, failed to find user', 500, null);
+                            let response = responseLib.generate(true, 'Internal server error, failed to find user', ResponseCode, null);
                             reject(response);
                         } else if (checkLib.isEmpty(userDetails)) {
-                            let response = responseLib.generate(true, 'User not found with this email id', 404, null)
+                            let response = responseLib.generate(true, 'User not found with this email id', ResponseCode, null)
                             reject(response);
                         } else {
                             resolve(userDetails);
@@ -110,7 +111,7 @@ let login = (req, res) => {
                     });
 
             } else {
-                let response = responseLib.generate(true, 'Bad request, email missing', 400, null);
+                let response = responseLib.generate(true, 'Bad request, email missing', ResponseCode, null);
                 reject(response);
             }
         })
@@ -120,7 +121,7 @@ let login = (req, res) => {
             passwordLib.comparePassword(req.body.password, retrievedUserDetails.password, (err, isMatch) => {
                 if (err) {
                     loggerLib.error(err.message, 'userController: validatePassword()', 10)
-                    let response = responseLib.generate(true, 'Login Failed', 500, null)
+                    let response = responseLib.generate(true, 'Login Failed', ResponseCode, null)
                     reject(response)
                 } else if (isMatch) {
                     let retrievedUserDetailsObj = retrievedUserDetails.toObject()
@@ -132,7 +133,7 @@ let login = (req, res) => {
                     resolve(retrievedUserDetailsObj)
                 } else {
                     loggerLib.info('Login Failed Due To Invalid Password', 'userController: validatePassword()', 10)
-                    let response = responseLib.generate(true, 'Invalid Password', 400, null)
+                    let response = responseLib.generate(true, 'Invalid Password', ResponseCode, null)
                     reject(response)
                 }
             })
@@ -143,7 +144,7 @@ let login = (req, res) => {
         return new Promise((resolve, reject) => {
             tokenLib.generateToken(userDetails, (err, tokenDetails) => {
                 if (err) {
-                    let response = responseLib.generate(true, 'Failed To Generate Token', 500, null)
+                    let response = responseLib.generate(true, 'Failed To Generate Token', ResponseCode, null)
                     reject(response)
                 } else {
                     tokenDetails.userId = userDetails.userId
@@ -159,7 +160,7 @@ let login = (req, res) => {
                 userId: tokenDetails.userId
             }, (err, retrievedTokenDetails) => {
                 if (err) {
-                    let response = responseLib.generate(true, 'Failed To Generate Token', 500, null)
+                    let response = responseLib.generate(true, 'Failed To Generate Token', ResponseCode, null)
                     reject(response)
                 } else if (checkLib.isEmpty(retrievedTokenDetails)) {
                     let newAuthToken = new AuthModel({
@@ -170,7 +171,7 @@ let login = (req, res) => {
                     })
                     newAuthToken.save((err, newTokenDetails) => {
                         if (err) {
-                            let response = responseLib.generate(true, 'Failed To Generate Token', 500, null)
+                            let response = responseLib.generate(true, 'Failed To Generate Token', ResponseCode, null)
                             reject(response)
                         } else {
                             let responseBody = {
@@ -186,7 +187,7 @@ let login = (req, res) => {
                     retrievedTokenDetails.tokenGenerationTime = moment.utc().format()
                     retrievedTokenDetails.save((err, newTokenDetails) => {
                         if (err) {
-                            let response = responseLib.generate(true, 'Failed To Generate Token', 500, null)
+                            let response = responseLib.generate(true, 'Failed To Generate Token', ResponseCode, null)
                             reject(response)
                         } else {
                             let responseBody = {
@@ -206,8 +207,8 @@ let login = (req, res) => {
         .then(generateToken)
         .then(saveToken)
         .then((resolve) => {
-            let response = responseLib.generate(false, 'Login Successful', 200, resolve)
-            res.status(200)
+            let response = responseLib.generate(false, 'Login Successful', ResponseCode, resolve)
+            res.status(ResponseCode)
             res.send(response)
         })
         .catch((err) => {
@@ -222,13 +223,13 @@ let logout = (req, res) => {
     AuthModel.findOneAndRemove({ userId: req.params.userId },
         (err, result) => {
             if (err) {
-                let response = responseLib.generate(true, 'Internal server error, failed to logout', 500, null);
+                let response = responseLib.generate(true, 'Internal server error, failed to logout', ResponseCode, null);
                 res.send(response);
             } else if (checkLib.isEmpty(result)) {
-                let response = responseLib.generate(true, 'User not found', 404, null);
+                let response = responseLib.generate(true, 'User not found', ResponseCode, null);
                 res.send(response);
             } else {
-                let response = responseLib.generate(false, 'Logged out', 200, null);
+                let response = responseLib.generate(false, 'Logged out', ResponseCode, null);
                 res.send(response);
             }
         });
@@ -240,7 +241,7 @@ let forgotPassword = (req, res) => {
     let validateUserInput = () => {
         return new Promise((resolve, reject) => {
             if (checkLib.isEmpty(req.body.email)) {
-                let response = responseLib.generate(true, 'Bad request, email is missing', 400, null);
+                let response = responseLib.generate(true, 'Bad request, email is missing', ResponseCode, null);
                 reject(response);
             } else {
                 resolve(req);
@@ -252,18 +253,18 @@ let forgotPassword = (req, res) => {
             UserModel.findOne({ email: req.body.email },
                 (err, result) => {
                     if (err) {
-                        let response = responseLib.generate(true, 'Internal server error, failed to find user', 500, null);
+                        let response = responseLib.generate(true, 'Internal server error, failed to find user', ResponseCode, null);
                         reject(response);
                     } else if (checkLib.isEmpty(result)) {
-                        let response = responseLib.generate(true, 'User not found with this email', 404, null);
+                        let response = responseLib.generate(true, 'User not found with this email', ResponseCode, null);
                         reject(response);
                     } else {
                         emailLib.sendEmail(result.email, null, "Plannin Meeting password reset",
                             `Dear user,<br/><br/> 
-                        <a href='http://localhost:4200/resetPassword/${result.userId}'>
+                        <a href='http://localhost:4ResponseCode/resetPassword/${result.userId}'>
                         Click here to reset password</a><br/><br/><br>
                         Cheers,<br/>Planning Meeting.`);
-                        let response = responseLib.generate(false, 'Email sent successfully to reset the password', 200, 'email sent');
+                        let response = responseLib.generate(false, 'Email sent successfully to reset the password', ResponseCode, 'email sent');
                         resolve(response);
                     }
                 })
@@ -272,7 +273,7 @@ let forgotPassword = (req, res) => {
     validateUserInput(req, res)
         .then(sendResetPasswordLink)
         .then((resolve) => {
-            let response = responseLib.generate(false, 'email send successfully for password reset', 200, resolve)
+            let response = responseLib.generate(false, 'email send successfully for password reset', ResponseCode, resolve)
             res.send(response);
         }).catch((err) => {
             let response = responseLib.generate(err.error, err.message, err.status, err.data);
@@ -289,17 +290,17 @@ let resetPassword = (req, res) => {
                 UserModel.findOne({ userId: req.body.userId },
                     (err, userDetails) => {
                         if (err) {
-                            let response = responseLib.generate(true, 'Internal server error, failed to find user', 500, null);
+                            let response = responseLib.generate(true, 'Internal server error, failed to find user', ResponseCode, null);
                             reject(response);
                         } else if (checkLib.isEmpty(userDetails)) {
-                            let response = responseLib.generate(true, 'User not found', 404, null);
+                            let response = responseLib.generate(true, 'User not found', ResponseCode, null);
                             reject(response);
                         } else {
                             resolve(userDetails);
                         }
                     })
             } else {
-                let response = responseLib.generate(true, 'Bad request, userId missing', 400, null);
+                let response = responseLib.generate(true, 'Bad request, userId missing', ResponseCode, null);
                 reject(response);
             }
         });
@@ -307,7 +308,7 @@ let resetPassword = (req, res) => {
     let updatePassword = (userDetails) => {
         return new Promise((resolve, reject) => {
             if (checkLib.isEmpty(req.body.password)) {
-                let response = responseLib.generate(true, 'Bad request, password missing', 400, null);
+                let response = responseLib.generate(true, 'Bad request, password missing', ResponseCode, null);
                 reject(response);
             } else {
                 UserModel.update({ userId: req.body.userId },
@@ -315,17 +316,17 @@ let resetPassword = (req, res) => {
                     { multi: true },
                     (err, result) => {
                         if (err) {
-                            let response = responseLib.generate(true, 'Internal server error, failed to change password', 500, null);
+                            let response = responseLib.generate(true, 'Internal server error, failed to change password', ResponseCode, null);
                             reject(response);
                         } else if (checkLib.isEmpty(result)) {
-                            let response = responseLib.generate(true, 'User not found', 404, null);
+                            let response = responseLib.generate(true, 'User not found', ResponseCode, null);
                             reject(response);
                         } else {
                             emailLib.sendEmail(userDetails.email, null, "Plannin Meeting password reset",
                                 `Dear user,<br/><br/> 
                                 Your login password for Planning Meeting has been changed.<br/<br/>br/>
                                 Cheers,<br/>Planning Meeting.`);
-                            let response = responseLib.generate(false, 'Password changed', 200, null);
+                            let response = responseLib.generate(false, 'Password changed', ResponseCode, null);
                             resolve(response);
                         }
                     });
@@ -335,8 +336,8 @@ let resetPassword = (req, res) => {
     findUser(req, res)
         .then(updatePassword)
         .then((resolve) => {
-            res.status(200);
-            let response = responseLib.generate(false, 'Pasword changed', 200, resolve);
+            res.status(ResponseCode);
+            let response = responseLib.generate(false, 'Pasword changed', ResponseCode, resolve);
             res.send(response);
         }).catch((err) => res.send(err));
 }
@@ -350,13 +351,13 @@ let getUsers = (req, res) => {
         .exec((err, result) => {
             if (err) {
                 loggerLib.error(err.message, 'User Controller: getAllUser()', 10);
-                let response = responseLib.generate(true, 'Internal server error, failed to find users', 500, null);
+                let response = responseLib.generate(true, 'Internal server error, failed to find users', ResponseCode, null);
                 res.send(response);
             } else if (checkLib.isEmpty(result)) {
-                let response = responseLib.generate(true, 'User not found', 404, null);
+                let response = responseLib.generate(true, 'User not found', ResponseCode, null);
                 res.send(response);
             } else {
-                let response = responseLib.generate(false, 'User found', 200, result)
+                let response = responseLib.generate(false, 'User found', ResponseCode, result)
                 res.send(response);
             }
         })
@@ -371,13 +372,13 @@ let getUserById = (req, res) => {
         .exec((err, result) => {
             if (err) {
                 loggerLib.error(err.message, 'userController: getUserById()')
-                let response = responseLib.generate(true, 'Internal server error, failed to find user', 500, null)
+                let response = responseLib.generate(true, 'Internal server error, failed to find user', ResponseCode, null)
                 res.send(response);
             } else if (checkLib.isEmpty(result)) {
-                let response = responseLib.generate(true, 'User not found', 404, null)
+                let response = responseLib.generate(true, 'User not found', ResponseCode, null)
                 res.send(response);
             } else {
-                let response = responseLib.generate(false, 'User found', 200, result)
+                let response = responseLib.generate(false, 'User found', ResponseCode, result)
                 res.send(response);
             }
         })
@@ -389,14 +390,14 @@ let deleteUser = (req, res) => {
     UserModel.findOneAndRemove({ 'userId': req.params.userId }).exec((err, result) => {
         if (err) {
             loggerLib.error(err.message, 'User Controller: deleteUser()');
-            let response = responseLib.generate(true, 'Internal server error, failed to delete user', 500, null);
+            let response = responseLib.generate(true, 'Internal server error, failed to delete user', ResponseCode, null);
             res.send(response);
         } else if (checkLib.isEmpty(result)) {
             loggerLib.info('User not found', 'User Controller: deleteUser()');
-            let response = responseLib.generate(true, 'User not found', 404, null);
+            let response = responseLib.generate(true, 'User not found', ResponseCode, null);
             res.send(response);
         } else {
-            let response = responseLib.generate(false, 'User deleted', 200, result);
+            let response = responseLib.generate(false, 'User deleted', ResponseCode, result);
             res.send(response);
         }
     });
@@ -409,13 +410,13 @@ let updateUser = (req, res) => {
     UserModel.update({ 'userId': req.params.userId }, options).exec((err, result) => {
         if (err) {
             loggerLib.error(err.message, 'User Controller:updateUser', 10);
-            let response = responseLib.generate(true, 'Internal server error, failed to update user', 500, null);
+            let response = responseLib.generate(true, 'Internal server error, failed to update user', ResponseCode, null);
             res.send(response);
         } else if (checkLib.isEmpty(result)) {
-            let response = responseLib.generate(true, 'User not found', 404, null);
+            let response = responseLib.generate(true, 'User not found', ResponseCode, null);
             res.send(response);
         } else {
-            let response = responseLib.generate(false, 'User updated', 200, result);
+            let response = responseLib.generate(false, 'User updated', ResponseCode, result);
             res.send(response);
         }
     });

@@ -32,8 +32,7 @@ fs.readdirSync(routesPath).forEach(file => {
     }
 });
 
-// Handlers
-// handle specific listen errors with friendly messages
+
 let serverErrorHandler = (error) => {
     if (error.syscall !== 'listen') {
         throw error;

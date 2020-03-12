@@ -14,11 +14,11 @@
     </ng-template>
     <ng-template #signupAndLogin>
         <div class="row"> 
-            <div class="col-xs-12 col-sm-6 signup shadow-box-card">
+            <div class="col-xs-12 col-sm-12 signup content let-modal">
                 <!-- SIGN UP -->
                 <app-signup></app-signup>
             </div>
-            <div class="col-xs-12 col-sm-6 login">
+            <div class="col-xs-12 col-sm-12 login">
                 <div *ngIf="isForgatePassword; then forgotPassword else login"></div>
                 <ng-template #forgotPassword>
                     <!-- FORGOT PASSWORD -->
