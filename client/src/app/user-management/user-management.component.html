@@ -3,7 +3,8 @@
 <!-- APP HEADER -->
 <app-header></app-header>
 <div class="container">
-    <div *ngIf="isResetPassWord; then resetPassword else signupAndLogin"></div>
+    <div *ngIf="isResetPassWord; then resetPassword  else Login else signup"></div>
+    
     <!-- PASSWORD RESET -->
     <ng-template #resetPassword>
         <div class="row">
@@ -11,28 +12,41 @@
                 <app-password-reset [userId]="userId"></app-password-reset>
             </div>
         </div>
+        
     </ng-template>
-    <ng-template #signupAndLogin>
+    <ng-template #signup>
+        <ng-template #login>
+            <!-- LOGIN -->
+            <app-login></app-login>
+        </ng-template>
         <div class="row"> 
-            <div class="col-xs-12 col-sm-12 signup content let-modal">
+            <div class="col-xs-12 col-sm-12 signup">
                 <!-- SIGN UP -->
+                <div *ngIf="issignup;then signup else login"></div>
+            
+            <ng-template #signup>
                 <app-signup></app-signup>
-            </div>
+            </ng-template>
+        </div>
             <div class="col-xs-12 col-sm-12 login">
                 <div *ngIf="isForgatePassword; then forgotPassword else login"></div>
                 <ng-template #forgotPassword>
                     <!-- FORGOT PASSWORD -->
                     <app-forgot-password></app-forgot-password>
                 </ng-template>
-                <ng-template #login>
-                    <!-- LOGIN -->
-                    <app-login></app-login>
-                </ng-template>
+                
+
+
                <div class="row">
                    <div class="col-12 forgotPassword">
                         <a (click)="isForgatePassword=!isForgatePassword">{{isForgatePassword? 'Back to Login' : 'Forgot Password?'}}</a>
                    </div>
                </div>
+               <div class="row">
+                <div class="col-12 signup">
+                     <a (click)="issignup=!issignup">{{issignup? 'Back to Login' : 'signup'}}</a>
+                </div>
+            </div>
             </div>
         </div>
     </ng-template>
