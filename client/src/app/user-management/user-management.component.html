@@ -3,7 +3,7 @@
 <!-- APP HEADER -->
 <app-header></app-header>
 <div class="container">
-    <div *ngIf="isResetPassWord; then resetPassword  else Login else signup"></div>
+    <div *ngIf="isResetPassWord; then resetPassword  switch Login else  signup"></div>
     
     <!-- PASSWORD RESET -->
     <ng-template #resetPassword>

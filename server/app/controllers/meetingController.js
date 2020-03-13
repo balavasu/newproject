@@ -4,10 +4,10 @@ const moment = require('moment');
 const responseLib = require('./../libs/responseLib');
 const emailLib = require('../libs/emailLib');
 const checkLib = require('../libs/checkLib');
-const ResponseCode= require('../constants/statusCode');
+const ResponseCode = require('../constants/statusCode');
 const MeetingModel = mongoose.model('Meeting');
 
-/*---------MEETING START----------------*/
+/*---------CREATE MEETING START----------------*/
 let createMeeting = (req, res) => {
     let validateRequest = () => {
         return new Promise((resolve, reject) => {
@@ -15,7 +15,7 @@ let createMeeting = (req, res) => {
                 req.body.invitee && req.body.location && req.body.purpose) {
                 resolve(req);
             } else {
-                let response = responseLib.generate(true, 'Some required fields of meeting are missing.', ResponseCode, null);
+                let response = responseLib.generate(true, 'Some required fields of meeting are missing.', ResponseCode.BadRequest, null);
                 reject(response);
             }
         })
@@ -37,12 +37,12 @@ let createMeeting = (req, res) => {
             });
             newMeeting.save((err, result) => {
                 if (err) {
-                    let response = responseLib.generate(true, 'Internal server error, falied to save the meeting.', ResponseCode, null);
+                    let response = responseLib.generate(true, 'Internal server error, falied to save the meeting.', ResponseCode.NetworkError, null);
                     reject(response);
                 } else {
                     let createdMeeting = result.toObject();
                     emailLib.sendEmail(createdMeeting.inviteeEmail, createdMeeting.inviterEmail, createdMeeting.title,
-                        `Dear user, <br/><br/> A new meeting has been scheduled :<br/> 
+                        `Dear user, <br/><br/> A new meeting has been scheduled for you:<br/> 
                         ${prepareEmailMessage(createdMeeting)}`);
                     resolve(createdMeeting);
                 }
@@ -52,7 +52,7 @@ let createMeeting = (req, res) => {
     validateRequest(req, res)
         .then(saveMeeting)
         .then((resolve) => {
-            let response = responseLib.generate(false, 'Meeting created', ResponseCode, resolve);
+            let response = responseLib.generate(false, 'Meeting created', ResponseCode.success, resolve);
             res.send(response)
         }).catch(err => res.send(err));
 };
@@ -66,10 +66,10 @@ let updateMeeting = (req, res) => {
                 meetingId: req.params.meetingId
             }, (err, result) => {
                 if (err) {
-                    let response = responseLib.generate(true, 'error finding meeting', ResponseCode, null);
+                    let response = responseLib.generate(true, 'error finding meeting', ResponseCode.NetworkError, null);
                     reject(response)
                 } else if (checkLib.isEmpty(result)) {
-                    let response = responseLib.generate(true, 'failed to find meeting', ResponseCode, null);
+                    let response = responseLib.generate(true, 'failed to find meeting', ResponseCode.NotFound, null);
                     reject(response);
                 } else {
                     resolve(result);
@@ -84,10 +84,10 @@ let updateMeeting = (req, res) => {
                 meetingId: req.params.meetingId
             }, options, (err, updateResult) => {
                 if (err) {
-                    let response = responseLib.generate(true, 'failed to update meeting', ResponseCode, null);
+                    let response = responseLib.generate(true, 'failed to update meeting', ResponseCode.NetworkError, null);
                     reject(response);
                 } else if (checkLib.isEmpty(updateResult)) {
-                    let response = responseLib.generate(true, 'error finding meeting', ResponseCode, null);
+                    let response = responseLib.generate(true, 'error finding meeting', ResponseCode.NotFound, null);
                     reject(response);
                 } else {
                     let updatedMeeting = req.body;
@@ -102,7 +102,7 @@ let updateMeeting = (req, res) => {
     findMeetings()
         .then(update)
         .then((resolve) => {
-            let response = responseLib.generate(false, 'Meeting updated', ResponseCode, resolve);
+            let response = responseLib.generate(false, 'Meeting updated', ResponseCode.success, resolve);
             res.send(response)
         }).catch((err) => res.send(err));
 }
@@ -116,10 +116,10 @@ let deleteMeeting = (req, res) => {
                 meetingId: req.params.meetingId
             }, (err, result) => {
                 if (err) {
-                    let response = responseLib.generate(true, 'Internal server error, falied to find meeting', ResponseCode, null);
+                    let response = responseLib.generate(true, 'Internal server error, falied to find meeting', ResponseCode.NetworkError, null);
                     reject(response);
                 } else if (checkLib.isEmpty(result)) {
-                    let response = responseLib.generate(true, 'Meeting not found', ResponseCode, null);
+                    let response = responseLib.generate(true, 'Meeting not found', ResponseCode.NotFound, null);
                     reject(response);
                 } else {
                     resolve(result);
@@ -133,10 +133,10 @@ let deleteMeeting = (req, res) => {
                 meetingId: req.params.meetingId
             }, (err, deleteResult) => {
                 if (err) {
-                    let response = responseLib.generate(true, 'Internal server error, failed to delete meeting', ResponseCode, null);
+                    let response = responseLib.generate(true, 'Internal server error, failed to delete meeting', ResponseCode.NetworkError, null);
                     reject(response);
                 } else if (checkLib.isEmpty(deleteResult)) {
-                    let response = responseLib.generate(true, 'Meeting not found', ResponseCode, null);
+                    let response = responseLib.generate(true, 'Meeting not found', ResponseCode.NotFound, null);
                     reject(response);
                 } else {
                     emailLib.sendEmail(result.inviteeEmail, result.inviterEmail, result.title,
@@ -150,7 +150,7 @@ let deleteMeeting = (req, res) => {
     findMeeting()
         .then(deleteThisMeeting)
         .then((resolve) => {
-            let response = responseLib.generate(false, 'Meeting deleted', ResponseCode, resolve);
+            let response = responseLib.generate(false, 'Meeting deleted', ResponseCode.success, resolve);
             res.send(response)
         }).catch((err) => res.send(err));
 }
@@ -161,7 +161,7 @@ let getMeetingsByInviterAndInvitee = (req, res) => {
     let validateRequest = () => {
         return new Promise((resolve, reject) => {
             if (checkLib.isEmpty(req.query.inviter) || checkLib.isEmpty(req.query.invitee)) {
-                let response = responseLib.generate(true, 'Some parameters missing', ResponseCode, null);
+                let response = responseLib.generate(true, 'Some parameters missing', ResponseCode.BadRequest, null);
                 reject(response);
             } else {
                 resolve();
@@ -176,10 +176,10 @@ let getMeetingsByInviterAndInvitee = (req, res) => {
                 .lean()
                 .exec((err, result) => {
                     if (err) {
-                        let response = responseLib.generate(true, 'Internal server error while finding meeting for selected user', ResponseCode, null);
+                        let response = responseLib.generate(true, 'Internal server error while finding meeting for selected user', ResponseCode.NetworkError, null);
                         reject(response);
                     } else if (checkLib.isEmpty(result)) {
-                        let response = responseLib.generate(true, 'No meetings found for selected user', ResponseCode, null);
+                        let response = responseLib.generate(true, 'No meetings found for selected user', ResponseCode.NotFound, null);
                         reject(response);
                     } else {
                         resolve(result);
@@ -190,7 +190,7 @@ let getMeetingsByInviterAndInvitee = (req, res) => {
     validateRequest()
         .then(findMeetings)
         .then((resolve) => {
-            let response = responseLib.generate(false, 'Meeting found', ResponseCode, resolve);
+            let response = responseLib.generate(false, 'Meeting found', ResponseCode.success, resolve);
             res.send(response);
         }).catch((err) => res.send(err));
 }
@@ -201,7 +201,7 @@ let getMeetingsByInviter = (req, res) => {
     let validateRequest = () => {
         return new Promise((resolve, reject) => {
             if (checkLib.isEmpty(req.params.inviterId)) {
-                let response = responseLib.generate(true, 'parameters missing', ResponseCode, null);
+                let response = responseLib.generate(true, 'parameters missing', ResponseCode.AlreadyExist, null);
                 reject(response);
             } else {
                 resolve();
@@ -215,10 +215,10 @@ let getMeetingsByInviter = (req, res) => {
                 .lean()
                 .exec((err, result) => {
                     if (err) {
-                        let response = responseLib.generate(true, 'Internal server error while finding meeting for selected user', ResponseCode, null);
+                        let response = responseLib.generate(true, 'Internal server error while finding meeting for selected user', ResponseCode.NetworkError, null);
                         reject(response);
                     } else if (checkLib.isEmpty(result)) {
-                        let response = responseLib.generate(true, 'No meetings found for selected user', ResponseCode, null);
+                        let response = responseLib.generate(true, 'No meetings found for selected user', ResponseCode.NotFound, null);
                         reject(response);
                     } else {
                         resolve(result);
@@ -229,7 +229,7 @@ let getMeetingsByInviter = (req, res) => {
     validateRequest()
         .then(findMeetings)
         .then((resolve) => {
-            let response = responseLib.generate(false, 'Meeting found', ResponseCode, resolve);
+            let response = responseLib.generate(false, 'Meeting found', ResponseCode.success, resolve);
             res.send(response);
         }).catch((err) => res.send(err));
 }
@@ -240,7 +240,7 @@ let getMeetingsByInvitee = (req, res) => {
     let validateRequest = () => {
         return new Promise((resolve, reject) => {
             if (checkLib.isEmpty(req.params.inviteeId)) {
-                let response = responseLib.generate(true, 'parameters missing', ResponseCode, null);
+                let response = responseLib.generate(true, 'parameters missing', ResponseCode.AlreadyExist, null);
                 reject(response);
             } else {
                 resolve();
@@ -254,10 +254,10 @@ let getMeetingsByInvitee = (req, res) => {
                 .lean()
                 .exec((err, result) => {
                     if (err) {
-                        let response = responseLib.generate(true, 'Internal server error while finding meeting for selected user', ResponseCode, null);
+                        let response = responseLib.generate(true, 'Internal server error while finding meeting for selected user', ResponseCode.NetworkError, null);
                         reject(response);
                     } else if (checkLib.isEmpty(result)) {
-                        let response = responseLib.generate(true, 'No meetings found for selected user', ResponseCode, null);
+                        let response = responseLib.generate(true, 'No meetings found for selected user', ResponseCode.NotFound, null);
                         reject(response);
                     } else {
                         resolve(result);
@@ -268,7 +268,7 @@ let getMeetingsByInvitee = (req, res) => {
     validateRequest()
         .then(findMeetings)
         .then((resolve) => {
-            let response = responseLib.generate(false, 'Meeting found', ResponseCode, resolve);
+            let response = responseLib.generate(false, 'Meeting found', ResponseCode.success, resolve);
             res.send(response);
         }).catch((err) => res.send(err));
 }

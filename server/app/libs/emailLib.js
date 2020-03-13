@@ -29,7 +29,7 @@ let sendEmail = (toEmail, ccEmail, emailTitle, emailMessage) => {
         transporter.sendMail(mailOptions, function (err, info) {
             if (err) {
                 logger.error('Sent Mail Failed!', 'emailLib.sendMail', 10);
-                let response = response.generate(true, 'Server Error!Sent Mail Failed.', ResponseCode, null);
+                let response = response.generate(true, 'Server Error!Sent Mail Failed.', ResponseCode.NetworkError, null);
                 reject(response);
             }
             else {
