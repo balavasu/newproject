@@ -3,7 +3,7 @@
 <!-- APP HEADER -->
 <app-header></app-header>
 <div class="container">
-    <div *ngIf="isResetPassWord; then resetPassword  switch Login else  signup"></div>
+    <div *ngIf="isResetPassWord; then resetPassword  switch Login else signup"></div>
     
     <!-- PASSWORD RESET -->
     <ng-template #resetPassword>
@@ -28,8 +28,11 @@
                 <app-signup></app-signup>
             </ng-template>
         </div>
-            <div class="col-xs-12 col-sm-12 login">
-                <div *ngIf="isForgatePassword; then forgotPassword else login"></div>
+            <div class="col-xs-6 col-sm-6 login">
+                <div *ngIf="isForgatePassword; then forgotPassword switch login"></div>
+                <div class="col-xs-6 col-sm-6 forgotPassword">
+                    <a (click)="isForgatePassword=!isForgatePassword">{{isForgatePassword? 'Back to Login' : 'Forgot Password'}}</a>
+               </div>
                 <ng-template #forgotPassword>
                     <!-- FORGOT PASSWORD -->
                     <app-forgot-password></app-forgot-password>
@@ -38,9 +41,7 @@
 
 
                <div class="row">
-                   <div class="col-12 forgotPassword">
-                        <a (click)="isForgatePassword=!isForgatePassword">{{isForgatePassword? 'Back to Login' : 'Forgot Password?'}}</a>
-                   </div>
+                   
                </div>
                <div class="row">
                 <div class="col-12 signup">

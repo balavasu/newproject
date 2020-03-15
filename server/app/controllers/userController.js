@@ -11,7 +11,7 @@ const ResponseCode= require('../constants/statusCode');
 const AuthModel = mongoose.model('Auth');
 const UserModel = mongoose.model('User');
 const emailLib = require('../libs/emailLib');
-
+const logger = require('../libs/loggerLib');
 /*----------SIGNUP START ---------*/
 let signUp = (req, res) => {
     let validateUserInput = () => {

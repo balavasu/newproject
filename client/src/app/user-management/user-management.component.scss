@@ -10,9 +10,16 @@
     font-weight: 500;
     margin-top: 15px;
 }
-
+.signup{
+    text-align: left;
+    cursor: pointer;
+    color: #005cbf;
+    text-decoration: underline;
+    font-weight: 500;
+    margin-top: 15px;
+}
 @media only screen and (max-width: 575px){
-    .signup, .login{
+    .signup, .login, .forgotPassword{
         margin: 20px auto;
         width: 90%;
     }

@@ -1,5 +1,7 @@
 // library to send email notifications
 const nodemailer = require('nodemailer');
+const logger = require('../libs/loggerLib');
+
 
 let sendEmail = (toEmail, ccEmail, emailTitle, emailMessage) => {
     return new Promise((resolve, reject) => {
@@ -26,10 +28,11 @@ let sendEmail = (toEmail, ccEmail, emailTitle, emailMessage) => {
             html: emailMessage
         };
         // send mail
+        let response = responseLib.generate
         transporter.sendMail(mailOptions, function (err, info) {
             if (err) {
                 logger.error('Sent Mail Failed!', 'emailLib.sendMail', 10);
-                let response = response.generate(true, 'Server Error!Sent Mail Failed.', ResponseCode.NetworkError, null);
+                let response = responseLib.generate(true, 'Server Error!Sent Mail Failed.', ResponseCode.NetworkError, null);
                 reject(response);
             }
             else {

@@ -6,6 +6,7 @@ const emailLib = require('../libs/emailLib');
 const checkLib = require('../libs/checkLib');
 const ResponseCode = require('../constants/statusCode');
 const MeetingModel = mongoose.model('Meeting');
+const logger = require('../libs/loggerLib');
 
 /*---------CREATE MEETING START----------------*/
 let createMeeting = (req, res) => {
