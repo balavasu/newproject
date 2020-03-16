@@ -9,14 +9,19 @@
     text-decoration: underline;
     font-weight: 500;
     margin-top: 15px;
+    float: right;
 }
-.signup{
+a {
     text-align: left;
     cursor: pointer;
     color: #005cbf;
     text-decoration: underline;
     font-weight: 500;
+  
+}
+.signup{
     margin-top: 15px;
+    float: left;
 }
 @media only screen and (max-width: 575px){
     .signup, .login, .forgotPassword{

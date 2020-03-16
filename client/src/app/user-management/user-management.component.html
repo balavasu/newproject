@@ -28,7 +28,7 @@
                 <app-signup></app-signup>
             </ng-template>
         </div>
-            <div class="col-xs-6 col-sm-6 login">
+            <div class="col-xs-6 col-sm-12 login">
                 <div *ngIf="isForgatePassword; then forgotPassword switch login"></div>
                 <div class="col-xs-6 col-sm-6 forgotPassword">
                     <a (click)="isForgatePassword=!isForgatePassword">{{isForgatePassword? 'Back to Login' : 'Forgot Password'}}</a>

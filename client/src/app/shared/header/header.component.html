@@ -1,16 +1,70 @@
 <div class="app-header">
   <div class="row">
-    <div class="col-5 app-title at-ellipsis">Meeting schedular</div>
+    <!-- <div class="col-12 app-title at-ellipsis">Meeting schedular</div> -->
     <!-- active user name -->
-    <div class="col-5 app-user-name at-ellipsis" *ngIf="authToken">
+    <!-- <div class="dropdown">
+      <button class="dropbtn">{{activeUser}} 
+        <i class="fa fa-caret-down"></i>
+      </button>
+      <div class="dropdown-content">
+        <a (click)="logout()">Logout</a>
+      
+      </div> -->
+    
+    <!-- <div class="btn-group" mdbDropdown *ngIf="authToken">
+      <button mdbDropdownToggle type="button" mdbBtn color="primary" class="dropdown-toggle waves-light"
+        mdbWavesEffect>{{activeUser}} </button>
+        <div class="dropdown-menu dropdown-menu-right">
+          <a class="dropdown-item" (click)="logout()" class="fa fa-fw fa-power-off">Logout</a>
+         
+        </div>
+      </div> -->
+    <!-- <div class="col-5 app-user-name at-ellipsis" *ngIf="authToken">
       <span class="user">{{activeUser}}</span>
-    </div>
+    </div> -->
     <!-- logout link -->
-    <div class="col-2 app-logout" *ngIf="authToken">
+    <!-- <div class="col-2 app-logout" *ngIf="authToken">
       <a (click)="logout()">
         <span class="logout-text">Logout</span>
         <i class="fa fa-fw fa-power-off"></i>
       </a>
-    </div>
+    </div> -->
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary col-12 app-title" >
+      <a class="navbar-brand" >Meeting schedular</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="collapse navbar-collapse" id="navbarSupportedContent" >
+        <ul class="navbar-nav mr-auto">
+          <!-- <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li> -->
+         
+         
+        </ul>
+        <form class="form-inline my-2 my-lg-0" *ngIf="authToken">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="
+            color: #fff;">
+              {{activeUser}}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" (click)="logout()">Logout</a>
+              <div class="dropdown-divider"></div>
+          
+              
+            
+            </div>
+          </li>
+        </form>
+      </div>
+    </nav>
   </div>
 </div>
