@@ -80203,7 +80203,7 @@ var DefaultNoComponentGlobalConfig = {
     enableHtml: false,
     progressBar: false,
     toastClass: 'ngx-toastr',
-    positionClass: 'toast-top-right',
+    positionClass: 'toast-center-center',
     titleClass: 'toast-title',
     messageClass: 'toast-message',
     easing: 'ease-in',
